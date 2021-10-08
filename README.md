@@ -1,5 +1,7 @@
 # Solseum NFT Generator for Solana!
 
+## [Check this guide here!](https://hackmd.io/@Solseum/HJEfeFDNt)
+
 ### Creating your randomized uniques NFTs, getting rarity information and displaying it on a webpage has never been easier!
 
 ###### tags: `solana` `nfts` `generator` `tutorials` `free` 
