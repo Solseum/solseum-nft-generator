@@ -1,0 +1,36 @@
+{
+    "name": "Cute Squares",
+    "symbol": "CS",
+    "description": "Cutest squares on Solana Network!!",
+    "seller_fee_basis_points": 500,
+    "image": "image.png",
+    "external_url": "YOUR WEBPAGE",
+    "attributes": 
+    [
+    ],
+    "collection":
+    {
+        "name": "Solana Cute Squares",
+        "family": "Solseum NFT Generator"
+    },
+    "properties":
+    {
+        "files":
+        [
+            {
+                "uri": "image.png",
+                "type": "image/png"
+            }
+        ],
+        "category": "image",
+        "creators":
+        [
+            {
+                "address": "2QvVjytnfYyFJUnVC9xGu3ejjVTNDzTUjfvodrn6NVcn",
+                "share": 100
+            }
+        ]
+    }
+}
+
+
