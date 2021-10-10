@@ -10,6 +10,8 @@ class NftCreator:
     nftsUniques = []
     nfts = []
     testRarities = False
+    totalMetadata = []
+    totalDNA = []
     def __init__(self, numberNFTs, folder_paths, testRarities, randomizeOutput):
         self.testRarities = testRarities
         self.CreateOutputFile()
@@ -32,7 +34,10 @@ class NftCreator:
             if self.nftsQuantity[i] <= 0:
                 continue
             if not self.testRarities:
-                self.CreateImageAndMetadata(i, self.nftsQuantity[i], folder_paths[i])
+                self.fMet, self.fDNA = self.CreateImageAndMetadata(i, self.nftsQuantity[i], folder_paths[i])
+                self.totalMetadata.append(self.fMet)
+                self.totalDNA.append(self.fDNA)
+                self.CreateExtraJsonFiles(i, folder_paths[i])
         if not self.testRarities:
             print('Check output/nfts folder to see ur', self.nftsCreatedCounter,'creations.')
         else:
@@ -65,6 +70,9 @@ class NftCreator:
         if len(orderedLayersPath) <= 1:
             print('ERROR. You need at least 2 differents attributes.')
             exit()
+        for file in orderedLayersPath:
+            if(file[0] == '.'):
+                orderedLayersPath.remove(file)
         attributes = []
         for file in orderedLayersPath:
             file = file.replace('_',' ').split('-')
@@ -99,6 +107,8 @@ class NftCreator:
         item = []
         itemPath = files
         for file in files:
+            if(file[0] == '.'):
+                continue
             file = file.split('-')
             item.append(file[1].replace('.png', '').replace('_', ' ').capitalize())
             itemTombola.append(itemTombola[-1] + int(file[0]))
@@ -195,11 +205,23 @@ class NftCreator:
         return self.nfts
     
     def CreateImageAndMetadata(self, i, nftsQuantity, folder_path):
+        folderMetadata = []
+        folderDNA = []
         print('Creating', nftsQuantity ,'NFTs image and metadata for', folder_path,'...', end = ' ', flush = True)
         for nft in self.nfts[i]:
             nft.CreateImage()
             nft.CreateMetadata()
-        print('Done.')
-        
+            folderMetadata.append(nft.metadata)
+            folderDNA.append(nft.dnaPaths)
+        print("Done.")
+        return folderMetadata, folderDNA
 
-            
+
+    def CreateExtraJsonFiles(self, i, folder_path):
+        print('Creating _metadata.json and _dna.json for', folder_path,'...', end = ' ', flush = True)
+        with open(os.path.dirname(__file__) + '/../output/nfts/'+ folder_path+'_metadata.json', 'w') as jsonFile:
+            json.dump(self.totalMetadata[i], jsonFile, indent = 4)
+
+        with open(os.path.dirname(__file__) + '/../output/nfts/'+ folder_path+'_dna.json', 'w') as jsonFile:
+            json.dump(self.totalDNA[i], jsonFile, indent = 4)
+        print("Done.")
