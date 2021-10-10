@@ -32,6 +32,8 @@ class NftCreator:
 
         for i in range(len(self.nftsQuantity)):
             if self.nftsQuantity[i] <= 0:
+                self.totalMetadata.append([])
+                self.totalDNA.append([])
                 continue
             if not self.testRarities:
                 self.fMet, self.fDNA = self.CreateImageAndMetadata(i, self.nftsQuantity[i], folder_paths[i])
