@@ -18,6 +18,7 @@ class Nft:
     
     def CreateImage(self):
         baseLayer = Image.open(os.path.dirname(__file__) + '/../input/assets/' + self.layers[0] + '/' + self.dnaPaths[0])
+        baseLayer = baseLayer.convert('RGBA')
         for i in range(1, len(self.layers)):
             frontLayer = Image.open(os.path.dirname(__file__) + '/../input/assets/' + self.layers[i] + '/' + self.dnaPaths[i])
             baseLayer = Image.alpha_composite(baseLayer, frontLayer)
