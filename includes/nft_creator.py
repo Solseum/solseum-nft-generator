@@ -41,6 +41,7 @@ class NftCreator:
                 self.totalDNA.append(self.fDNA)
                 self.CreateExtraJsonFiles(i, folder_paths[i])
         if not self.testRarities:
+            self.CreateTotalNFTInfo()
             print('Check output/nfts folder to see ur', self.nftsCreatedCounter,'creations.')
         else:
             print('Rarities will be calculated using a sample of',  self.nftsCreatedCounter, 'nfts.')
@@ -78,7 +79,7 @@ class NftCreator:
         attributes = []
         for file in orderedLayersPath:
             file = file.replace('_',' ').split('-')
-            attributes.append(file[1].capitalize())
+            attributes.append(file[1].title())
         print("Done.")
         return attributes, orderedLayersPath
 
@@ -112,7 +113,7 @@ class NftCreator:
             if(file[0] == '.'):
                 continue
             file = file.split('-')
-            item.append(file[1].replace('.png', '').replace('_', ' ').capitalize())
+            item.append(file[1].replace('.png', '').replace('_', ' ').title())
             itemTombola.append(itemTombola[-1] + int(file[0]))
         print('Done.')
         return item, itemPath, itemTombola
@@ -143,8 +144,10 @@ class NftCreator:
         print('Calculating NFTs unique configuration for', folder_path,'...', end = ' ', flush = True)
         nftsThisRun = []
         nftsCounterThisRun = 0
+        hasDifferentBackground = False
         for nft in range (nftTotalQuantity):
             while True:
+                hasDifferentBackground  = False
                 nftDNA = []
                 for i in range(len(attributes)):
                     randomUniformSelector = np.random.randint(0,itemsTombola[i][-1])
@@ -159,7 +162,12 @@ class NftCreator:
                             l = mid + 1
                         elif itemsTombola[i][mid] > randomUniformSelector and itemsTombola[i][mid+1] > randomUniformSelector:
                             r = mid - 1
-                if nftDNA not in self.nftsUniques:
+                #Same image with just a different background!
+                for nftt in self.nftsUniques:
+                    if nftDNA[1:] == nftt[1:]:
+                        hasDifferentBackground  = True
+                        break
+                if not hasDifferentBackground:
                     break
             self.nftsUniques.append(nftDNA)
             nftsThisRun.append(nftDNA)
@@ -169,15 +177,20 @@ class NftCreator:
             nftAttributes = []
             rawAttributes = []
             nftPaths = []
+            attributes_count = 0
+            filteredAttributes = []
             for i in range(len(attributes)):
-                nftAttributes.append({"trait_type": attributes[i], "value":items[i][dna[i]]})
+                if items[i][dna[i]] != "Notrait":
+                    attributes_count += 1
+                    filteredAttributes.append({attributes[i]: items[i][dna[i]]})
+                    nftAttributes.append({"trait_type": attributes[i], "value":items[i][dna[i]]})
                 rawAttributes.append([attributes[i],items[i][dna[i]]])
                 nftPaths.append(itemsPath[i][dna[i]])
             nftMetadata = dict(jsonTemplate)
             nftName = nftMetadata['name']
             nftMetadata['attributes'] = nftAttributes
             nftMetadata['name'] = nftName + ' #' + str(self.nftsCreatedCounter+1)
-            nft = Nft(nftsCounterThisRun, nftMetadata['name'], rawAttributes, nftMetadata, nftPaths, orderedLayersPath, folder_path)
+            nft = Nft(nftsCounterThisRun, nftMetadata['name'], rawAttributes, filteredAttributes,nftMetadata, nftPaths, orderedLayersPath, attributes_count, folder_path)
             nftsCreated.append(nft)
             self.nftsCreatedCounter += 1
             nftsCounterThisRun += 1
@@ -226,4 +239,20 @@ class NftCreator:
 
         with open(os.path.dirname(__file__) + '/../output/nfts/'+ folder_path+'_dna.json', 'w') as jsonFile:
             json.dump(self.totalDNA[i], jsonFile, indent = 4)
+        print("Done.")
+    
+    def CreateTotalNFTInfo(self):
+        print("Creating extra general NFT info...", end = ' ', flush = True)
+        jsonText = []
+        for nfts in self.nfts:
+            for nft in nfts:
+                jsonText.append({
+                    "name": nft.name,
+                    "attributes_count": nft.attributes_count,
+                    "items": nft.filteredAttributes,
+                    "folder": nft.folder_path
+                })
+        jsonText = sorted(jsonText, key=lambda d: d['attributes_count'])
+        with open(os.path.dirname(__file__) + '/../output/nfts.json', 'w') as jsonFile:
+            json.dump(jsonText, jsonFile, indent = 4)
         print("Done.")
