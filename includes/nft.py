@@ -31,6 +31,11 @@ class Nft:
 
     def CreateMetadata(self):
         with open(os.path.dirname(__file__) + '/../output/nfts/' + self.folder_path + '/' + str(self.number) + '.json', 'w') as jsonFile:
+            # The following two lines make this project compatible with new features in CMv2 (Candy Machine version 2)
+            # The JSON metadata new requirement is named image files.  Code will work only with png files.
+            # Change Date: 01/19/2022 - ck256-2000
+            self.metadata['image'] = str(self.number) + '.png'
+            self.metadata['properties']['files'][0] = {"uri" : str(self.number) + ".png", "type":"image/png"}
             json.dump(self.metadata, jsonFile, indent = 4)
 
 
