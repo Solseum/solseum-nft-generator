@@ -77,7 +77,7 @@ Finally, we generate a **json file containing all the information of the rarity 
 To start creating ur uniques NFTs for Solana you will have to ***clone*** **our github repository**. Open your terminal and execute the followings commands:
 1. `git clone https://github.com/Solseum/solseum-nft-generator.git`
 2. `cd solseum-nft-generator`
-3. `python3 -m pip install -r requeriments.txt`
+3. `python3 -m pip install -r requiriments.txt`
 
 
 ### Step 3: Be one with the folders!
