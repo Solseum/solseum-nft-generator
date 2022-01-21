@@ -180,7 +180,7 @@ class NftCreator:
             attributes_count = 0
             filteredAttributes = []
             for i in range(len(attributes)):
-                if items[i][dna[i]] != "Notrait":
+                if items[i][dna[i]] != "Nothing":
                     attributes_count += 1
                     filteredAttributes.append({attributes[i]: items[i][dna[i]]})
                     nftAttributes.append({"trait_type": attributes[i], "value":items[i][dna[i]]})
