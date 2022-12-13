@@ -21,12 +21,13 @@ class Nft:
         self.attributes_count = attributes_count
     def CreateImage(self):
         baseLayer = Image.open(os.path.dirname(__file__) + '/../input/assets/' + self.layers[0] + '/' + self.dnaPaths[0])
+        width, height = baseLayer.size
         baseLayer = baseLayer.convert('RGBA')
         for i in range(1, len(self.layers)):
             frontLayer = Image.open(os.path.dirname(__file__) + '/../input/assets/' + self.layers[i] + '/' + self.dnaPaths[i])
             frontLayer = frontLayer.convert('RGBA')
             baseLayer = Image.alpha_composite(baseLayer, frontLayer)
-        baseLayer = baseLayer.resize((1600,1600),Image.ANTIALIAS)
+        baseLayer = baseLayer.resize((width,height),Image.ANTIALIAS)
         baseLayer.save(os.path.dirname(__file__) + '/../output/nfts/' + self.folder_path + '/' + str(self.number) + '.png', quality = 100)
 
     def CreateMetadata(self):
